@@ -1,5 +1,7 @@
 package ro.tuc.ds2020.dtos;
 
+import jakarta.annotation.Nullable;
+
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
@@ -13,20 +15,26 @@ public class DeviceDetailsDTO {
     @NotNull
     private double maxHourlyEnergyConsumption;
 
+    @Nullable
+
+    private UUID assignedUserId;
+
     public DeviceDetailsDTO() {
     }
 
-    public DeviceDetailsDTO(UUID id, String description, String address, double maxHourlyEnergyConsumption) {
+    public DeviceDetailsDTO(UUID id, String description, String address, double maxHourlyEnergyConsumption, UUID assignedUserId) {
         this.id = id;
         this.description = description;
         this.address = address;
         this.maxHourlyEnergyConsumption = maxHourlyEnergyConsumption;
+        this.assignedUserId = assignedUserId;
     }
 
-    public DeviceDetailsDTO(String description, String address, double maxHourlyEnergyConsumption) {
+    public DeviceDetailsDTO(String description, String address, double maxHourlyEnergyConsumption, UUID assignedUserId) {
         this.description = description;
         this.address = address;
         this.maxHourlyEnergyConsumption = maxHourlyEnergyConsumption;
+        this.assignedUserId = assignedUserId;
     }
 
     public UUID getId() {
@@ -59,5 +67,14 @@ public class DeviceDetailsDTO {
 
     public void setMaxHourlyEnergyConsumption(double maxHourlyEnergyConsumption) {
         this.maxHourlyEnergyConsumption = maxHourlyEnergyConsumption;
+    }
+
+    @Nullable
+    public UUID getAssignedUserId() {
+        return assignedUserId;
+    }
+
+    public void setAssignedUserId(@Nullable UUID assignedUserId) {
+        this.assignedUserId = assignedUserId;
     }
 }

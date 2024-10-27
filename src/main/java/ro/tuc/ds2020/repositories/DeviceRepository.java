@@ -15,7 +15,8 @@ public interface DeviceRepository extends JpaRepository<Device, UUID> {
      * Example: JPA generate Query by Field
      */
     List<Device> findByDescription(String description);
-
+    List<Device> findByAssignedUserId(UUID userId);
+    Optional<Device> findById( UUID id);
     /**
      * Example: Write Custom Query
      */

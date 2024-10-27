@@ -8,15 +8,17 @@ public class DeviceDTO {
     private String description;
     private String address;
     private double maxHourlyEnergyConsumption;
+    private UUID assignedUserId;
 
     public DeviceDTO() {
     }
 
-    public DeviceDTO(UUID id, String description, String address, double maxHourlyEnergyConsumption) {
+    public DeviceDTO(UUID id, String description, String address, double maxHourlyEnergyConsumption, UUID assignedUserId) {
         this.id = id;
         this.description = description;
         this.address = address;
         this.maxHourlyEnergyConsumption = maxHourlyEnergyConsumption;
+        this.assignedUserId = assignedUserId;
     }
 
     public UUID getId() {
@@ -49,6 +51,14 @@ public class DeviceDTO {
 
     public void setMaxHourlyEnergyConsumption(double maxHourlyEnergyConsumption) {
         this.maxHourlyEnergyConsumption = maxHourlyEnergyConsumption;
+    }
+
+    public UUID getAssignedUserId() {
+        return assignedUserId;
+    }
+
+    public void setAssignedUserId(UUID assignedUserId) {
+        this.assignedUserId = assignedUserId;
     }
 
     @Override

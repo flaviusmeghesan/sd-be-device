@@ -29,14 +29,19 @@ public class Device implements Serializable {
     @Column(name = "max_hourly_energy_consumption", nullable = false)
     private double maxHourlyEnergyConsumption;
 
+    @Column(name = "assigned_user_id", nullable = true)
+    private UUID assignedUserId;
+
+
     public Device() {
     }
 
-    public Device(UUID id, String description, String address, double maxHourlyEnergyConsumption) {
+    public Device(UUID id, String description, String address, double maxHourlyEnergyConsumption, UUID assignedUserId) {
         this.id = id;
         this.description = description;
         this.address = address;
         this.maxHourlyEnergyConsumption = maxHourlyEnergyConsumption;
+        this.assignedUserId = assignedUserId;
     }
 
     public UUID getId() {
@@ -70,4 +75,13 @@ public class Device implements Serializable {
     public void setMaxHourlyEnergyConsumption(double maxHourlyEnergyConsumption) {
         this.maxHourlyEnergyConsumption = maxHourlyEnergyConsumption;
     }
+
+    public UUID getAssignedUserId() {
+        return assignedUserId;
+    }
+
+    public void setAssignedUserId(UUID assignedUserId) {
+        this.assignedUserId = assignedUserId;
+    }
+
 }

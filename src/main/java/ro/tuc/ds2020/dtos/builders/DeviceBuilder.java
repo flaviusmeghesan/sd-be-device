@@ -14,7 +14,8 @@ public class DeviceBuilder {
                 device.getId(),
                 device.getDescription(),
                 device.getAddress(),
-                device.getMaxHourlyEnergyConsumption()
+                device.getMaxHourlyEnergyConsumption(),
+                device.getAssignedUserId()
         );
     }
 
@@ -23,7 +24,8 @@ public class DeviceBuilder {
                 deviceDetailsDTO.getId(),
                 deviceDetailsDTO.getDescription(),
                 deviceDetailsDTO.getAddress(),
-                deviceDetailsDTO.getMaxHourlyEnergyConsumption()
+                deviceDetailsDTO.getMaxHourlyEnergyConsumption(),
+                deviceDetailsDTO.getAssignedUserId()
         );
     }
 }

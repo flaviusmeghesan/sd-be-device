@@ -1,2 +1,2 @@
-INSERT INTO person (id, name, address, age) values
-    ('00201D1E61F3401588BF4292B86E22E4', 'My Name', 'My Address', 20);
+INSERT INTO device (id, description, address, max_hourly_energy_consumption)
+VALUES ('123e4567-e89b-12d3-a456-426614174019', 'Device Description', 'Device Address', 10.5);

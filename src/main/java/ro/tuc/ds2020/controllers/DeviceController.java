@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import ro.tuc.ds2020.dtos.DeviceDTO;
 import ro.tuc.ds2020.dtos.DeviceDetailsDTO;
+import ro.tuc.ds2020.dtos.MappingDTO;
 import ro.tuc.ds2020.services.DeviceService;
 import ro.tuc.ds2020.utils.JwtUtil;
 
@@ -70,6 +71,16 @@ public class DeviceController {
     }
 
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<List<DeviceDTO>> getDevicesByUserId(@PathVariable("id") UUID user_id, HttpServletRequest request) {
+        if (!isClient(request)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+        List<DeviceDTO> devices = deviceService.findDevicesByUserId(user_id);
+        return new ResponseEntity<>(devices, HttpStatus.OK);
+    }
+
+
+
     // Helper method to validate JWT and return user ID from token
     private UUID getUserIdFromToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
@@ -122,58 +133,22 @@ public class DeviceController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        // Check if the device is assigned to a user
-        DeviceDTO device = deviceService.findDeviceById(deviceId);
-        if (device.getAssignedUserId() != null) {
-            return new ResponseEntity<>("Cannot delete device. The device is assigned to a user.", HttpStatus.BAD_REQUEST);
-        }
+
 
         deviceService.delete(deviceId);
         return new ResponseEntity<>("Device with id " + deviceId + " was deleted!", HttpStatus.OK);
     }
 
-    @GetMapping("/my-devices")
-    public ResponseEntity<List<DeviceDTO>> getAssignedDevices(HttpServletRequest request) {
-        // Step 1: Validate the token and ensure user is a client
-        UUID userId = getUserIdFromToken(request);
-        if (userId == null || !isClient(request)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
-        // Step 2: Retrieve devices assigned to the logged-in user
-        List<DeviceDTO> devices = deviceService.findDevicesByUserId(userId);
-        return new ResponseEntity<>(devices, HttpStatus.OK);
-    }
-
-
-
-    @PutMapping("/assign/{deviceId}/{userId}")
-    public ResponseEntity<String> assignDeviceToUser(@PathVariable("deviceId") UUID deviceId, @PathVariable("userId") UUID userId, HttpServletRequest request) {
+    // Assign a device to a user (admin only)
+    @PostMapping(value = "/assign/{user_id}/{device_id}")
+    public ResponseEntity<String> assignDeviceToUser(@PathVariable("user_id") UUID user_id, @PathVariable("device_id") UUID device_id, HttpServletRequest request) {
         if (!isAdmin(request)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        try {
-            // Step 1: Update device's assigned_user_id in Device Microservice database
-            deviceService.assignDeviceToUser(deviceId, userId);
-
-            // Step 2: Call the User Microservice to update the assigned_devices_id in user's record
-            String userServiceUrl = "http://localhost:8080/person/" + userId + "/assignDevice/" + deviceId;
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", request.getHeader("Authorization"));  // Forward the JWT token
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> userServiceResponse = restTemplate.exchange(userServiceUrl, HttpMethod.PUT, entity, String.class);
-
-            if (userServiceResponse.getStatusCode() == HttpStatus.OK) {
-                return new ResponseEntity<>("Device assigned to user successfully.", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Failed to update user record in User Microservice.", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error assigning device to user: {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        deviceService.assignDeviceToUser(user_id, device_id);
+        return new ResponseEntity<>("Device with id " + device_id + " was assigned to user with id " + user_id, HttpStatus.OK);
     }
+
 
 }
